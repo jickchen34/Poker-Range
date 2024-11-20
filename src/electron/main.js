@@ -35,7 +35,7 @@ function createWindow() {
     // 根据配置决定是否打开开发者工具
     AUTO_OPEN_DEVTOOLS && mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../../dist/index.html"));
   }
 }
 

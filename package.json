@@ -2,31 +2,28 @@
   "name": "poker_range",
   "private": true,
   "version": "0.0.0",
+  "description": "A poker range application built with Vue and Electron",
+  "author": "jickchen34",
   "main": "src/electron/main.js",
   "scripts": {
     "dev": "vite",
     "electron:dev": "vite --port 5173 & wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
     "build": "vite build && electron-builder",
-    "electron:build": "electron-builder"
+    "electron:build": "vite build && electron-builder"
   },
   "build": {
     "appId": "com.example.myapp",
-    "productName": "MyVueElectronApp",
+    "productName": "PokerRange",
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "src/electron/**/*"
     ],
     "directories": {
-      "output": "dist_electron"
+      "output": "dist-electron"
     }
   },
   "dependencies": {
     "@electron/remote": "^2.0.0",
-    "electron": "19.1.8",
-    "electron-builder": "^23.3.2",
-    "electron-builder-notarize": "^1.5.1",
-    "electron-debug": "^3.2.0",
-    "electron-updater": "^5.3.0",
     "vue": "^3.5.12"
   },
   "devDependencies": {
@@ -40,6 +37,8 @@
     "vite": "^5.4.10",
     "vite-plugin-electron": "^0.28.0",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "electron": "19.1.8",
+    "electron-builder": "^23.3.2"
   }
 }
