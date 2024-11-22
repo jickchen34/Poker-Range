@@ -51,7 +51,6 @@ const emit = defineEmits(["update:modelValue"]);
 
 const toggle = () => {
   const newValue = !props.modelValue;
-  console.log("Switch toggle:", props.modelValue, "->", newValue); // 添加详细日志
   emit("update:modelValue", newValue);
 };
 </script>

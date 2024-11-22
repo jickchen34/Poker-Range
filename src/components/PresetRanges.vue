@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRangePresets } from "../hooks/useRangePresets"; // 使用相对路径
 
 const emit = defineEmits(["select-range"]);
@@ -63,12 +63,12 @@ const parseRangeContent = (content) => {
         <div v-if="activeMainBtn === mainBtn" class="ml-3 flex flex-col gap-1">
           <button
             v-for="subBtn in getSubButtons(mainBtn)"
-            :key="subBtn"
+            :key="subBtn.path"
             class="sub-button"
-            :class="{ active: selectedPreset === `${mainBtn}/${subBtn}` }"
-            @click="handleSubClick(mainBtn, subBtn)"
+            :class="{ active: selectedPreset === subBtn.path }"
+            @click="handleSubClick(mainBtn, subBtn.path)"
           >
-            {{ subBtn }}
+            {{ subBtn.name }}
           </button>
         </div>
       </div>

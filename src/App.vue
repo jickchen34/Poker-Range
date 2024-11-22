@@ -2,6 +2,7 @@
 import { ref, onMounted, nextTick, watch } from "vue";
 import MenuPanel from "./components/MenuPanel.vue";
 import RangeTable from "./components/RangeTable.vue";
+import RangePresets from "./components/RangePresets.vue"; // 修正导入路径
 
 const currentMode = ref("normal");
 const isDragging = ref(false);
@@ -33,7 +34,7 @@ const initPosition = () => {
 const duplicateTable = ({ index, data }, offset = 30) => {
   // 创建一个新的位置
   const newPosition = {
-    x: tablePositions.value[index].x + offset, // 改为水平偏��
+    x: tablePositions.value[index].x + offset, // 改为水平偏移
     y: tablePositions.value[index].y + offset,
   };
 
@@ -139,22 +140,26 @@ onMounted(() => {
       class="main-wrap fixed left-12 right-0 top-0 bottom-0 bg-mac-bg overflow-hidden"
     >
       <Transition name="fade">
-        <div v-if="currentMode === 'normal'">
-          <div
-            v-for="(pos, index) in tablePositions"
-            :key="index"
-            class="range-table-wrapper absolute"
-            :style="{
-              transform: `translate(${pos.x}px, ${pos.y}px)`,
-              transformOrigin: 'top left',
-            }"
-          >
-            <RangeTable
-              :ref="(el) => (tableRefs[index] = el)"
-              @drag-handle="(e) => startDrag(e, index)"
-              :table-index="index"
-              @duplicate="duplicateTable"
-            />
+        <div v-if="currentMode === 'normal'" class="flex">
+          <RangePresets class="w-1/4" />
+          <!-- 添加预设范围组件 -->
+          <div class="flex-1 relative">
+            <div
+              v-for="(pos, index) in tablePositions"
+              :key="index"
+              class="range-table-wrapper absolute"
+              :style="{
+                transform: `translate(${pos.x}px, ${pos.y}px)`,
+                transformOrigin: 'top left',
+              }"
+            >
+              <RangeTable
+                :ref="(el) => (tableRefs[index] = el)"
+                @drag-handle="(e) => startDrag(e, index)"
+                :table-index="index"
+                @duplicate="duplicateTable"
+              />
+            </div>
           </div>
         </div>
       </Transition>

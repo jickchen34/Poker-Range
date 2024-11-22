@@ -8,10 +8,10 @@ export default defineConfig({
     vue(),
     electron({
       main: {
-        entry: "src/electron/main.js",
+        entry: "src/electron/main/index.js",
       },
       preload: {
-        input: "src/electron/preload.js",
+        input: "src/electron/preload/index.js",
       },
       renderer: {},
     }),

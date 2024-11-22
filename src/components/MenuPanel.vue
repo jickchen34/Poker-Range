@@ -19,22 +19,6 @@
           />
         </svg>
       </button>
-
-      <!-- 预设范围菜单项 -->
-      <button
-        class="w-8 h-8 mx-auto flex items-center justify-center hover:bg-mac-hover text-white/60 hover:text-white rounded-md"
-        @click="activeMenu = activeMenu === 'preset' ? '' : 'preset'"
-      >
-        <svg
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M9 17h6m-3-3v6M3 3h18v18H3z" />
-        </svg>
-      </button>
     </div>
 
     <!-- Bottom Bar - 移除 border-t -->
@@ -99,15 +83,9 @@
           </button>
 
           <!-- 面板标题 -->
-          <h3 class="text-white/90 text-lg font-medium mb-4">
-            {{ activeMenu === "mode" ? "模式选择" : "预设范围" }}
-          </h3>
+          <h3 class="text-white/90 text-lg font-medium mb-4">模式选择</h3>
 
           <ModePanel v-if="activeMenu === 'mode'" v-model:mode="currentMode" />
-          <PresetRanges
-            v-if="activeMenu === 'preset'"
-            @select-range="handleRangeSelect"
-          />
         </div>
       </div>
     </Transition>
@@ -127,18 +105,11 @@
 <script setup>
 import { ref, watch } from "vue";
 import ModePanel from "./ModePanel.vue";
-import PresetRanges from "./PresetRanges.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
 
 const emit = defineEmits(["update:mode", "select-range"]);
 const activeMenu = ref("");
 const currentMode = ref("normal");
-
-const handleRangeSelect = (ranges) => {
-  emit("select-range", ranges);
-  // 选择后可以自动关闭菜单
-  activeMenu.value = "";
-};
 
 // 监听模式变化
 watch(currentMode, (newMode) => {

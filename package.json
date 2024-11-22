@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "A poker range application built with Vue and Electron",
   "author": "jickchen34",
-  "main": "src/electron/main.js",
+  "main": "src/electron/main/index.js",
   "scripts": {
     "dev": "vite",
     "electron:dev": "vite --port 5173 & wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
