@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        "mac-bg": "#1C1C1E",
-        "mac-panel": "rgba(28, 28, 30, 0.95)",
-        "mac-hover": "rgba(255, 255, 255, 0.1)",
-        "mac-border": "rgba(255, 255, 255, 0.2)",
+        "mac-bg": "#0F0F10",
+        "mac-panel": "rgba(15, 15, 16, 0.98)",
+        "mac-hover": "rgba(255, 255, 255, 0.15)",
+        "mac-border": "rgba(255, 255, 255, 0.35)",
         "mac-blue": "#0A84FF",
       },
       backdropBlur: {

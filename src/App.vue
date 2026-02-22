@@ -2,12 +2,15 @@
 import { ref, onMounted, nextTick, watch } from "vue";
 import MenuPanel from "./components/MenuPanel.vue";
 import RangeTable from "./components/RangeTable.vue";
+import RangeStats from "./components/RangeStats.vue";
+import RangeIO from "./components/RangeIO.vue";
 
 const currentMode = ref("normal");
 const isDragging = ref(false);
 const dragOffset = ref({ x: 0, y: 0 });
 const rangeTableRef = ref(null);
-const currentDragIndex = ref(null); // 添加：跟踪当前正在拖动的表格索引
+const currentDragIndex = ref(null);
+const activeTableIndex = ref(0);
 
 // 添加一个数组来存储所有表格的位置
 const tablePositions = ref([{ x: 0, y: 0 }]);
@@ -119,6 +122,23 @@ watch(
   }
 );
 
+// 获取当前活动表格的数据
+const getCurrentTableData = () => {
+  const currentTable = tableRefs.value[activeTableIndex.value];
+  if (currentTable) {
+    return currentTable.getTableData();
+  }
+  return { selectedCells: {} };
+};
+
+// 处理范围导入
+const handleImportRange = (data) => {
+  const currentTable = tableRefs.value[activeTableIndex.value];
+  if (currentTable && data.selectedCells) {
+    currentTable.importTableData(data);
+  }
+};
+
 onMounted(() => {
   // 使用 nextTick 确保 DOM 已完全渲染
   nextTick(() => {
@@ -136,7 +156,7 @@ onMounted(() => {
     </div>
 
     <main
-      class="main-wrap fixed left-12 right-0 top-0 bottom-0 bg-mac-bg overflow-hidden"
+      class="main-wrap fixed left-12 right-64 top-0 bottom-0 bg-mac-bg overflow-hidden"
     >
       <Transition name="fade">
         <div v-if="currentMode === 'normal'">
@@ -148,6 +168,7 @@ onMounted(() => {
               transform: `translate(${pos.x}px, ${pos.y}px)`,
               transformOrigin: 'top left',
             }"
+            @click="activeTableIndex = index"
           >
             <RangeTable
               :ref="(el) => (tableRefs[index] = el)"
@@ -159,6 +180,12 @@ onMounted(() => {
         </div>
       </Transition>
     </main>
+
+    <!-- 右侧面板 -->
+    <aside class="fixed top-0 right-0 bottom-0 w-64 bg-[#1C1C1E] border-l border-mac-border z-10 overflow-y-auto p-4 space-y-4">
+      <RangeStats :selected-cells="getCurrentTableData().selectedCells" />
+      <RangeIO :table-data="getCurrentTableData()" @import-range="handleImportRange" />
+    </aside>
   </div>
 </template>
 
