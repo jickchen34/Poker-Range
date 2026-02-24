@@ -184,6 +184,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  compareSelectedCells: {
+    type: Object,
+    default: null,
+  },
 });
 
 const cards = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
@@ -239,12 +243,49 @@ const handleMouseEnter = (rowIndex, colIndex) => {
   toggleCell(rowIndex, colIndex);
 };
 
-// 修改 getCellStyle 函数
+// 修改 getCellStyle 函数（支持差异对比叠加）
 const getCellStyle = (rowIndex, colIndex) => {
   const key = `${rowIndex}-${colIndex}`;
   const cellData = selectedCells.value[key];
   const baseColor = getCellColor(rowIndex, colIndex);
 
+  // 对比模式
+  if (props.compareSelectedCells) {
+    const inCurrent = cellData?.selected;
+    const inCompare = props.compareSelectedCells[key]?.selected;
+
+    let borderStyle = {};
+    let overlayStyle = {};
+
+    if (inCurrent && inCompare) {
+      // 两者共有 → 绿色背景叠加
+      overlayStyle = {
+        background: `linear-gradient(to top, #22c55e88 ${cellData.percentage}%, ${baseColor} ${cellData.percentage}%)`,
+        outline: "2px solid #22c55e",
+        outlineOffset: "-2px",
+      };
+    } else if (inCurrent && !inCompare) {
+      // 仅当前有 → 红色边框
+      overlayStyle = {
+        background: `linear-gradient(to top, #ff6b6b ${cellData.percentage}%, ${baseColor} ${cellData.percentage}%)`,
+        outline: "2px solid #f87171",
+        outlineOffset: "-2px",
+      };
+    } else if (!inCurrent && inCompare) {
+      // 仅对比有 → 蓝色边框
+      overlayStyle = {
+        backgroundColor: baseColor,
+        outline: "2px solid #60a5fa",
+        outlineOffset: "-2px",
+      };
+    } else {
+      overlayStyle = { backgroundColor: baseColor };
+    }
+
+    return { ...borderStyle, ...overlayStyle };
+  }
+
+  // 普通模式
   if (cellData?.selected) {
     return {
       background: `linear-gradient(to top, #ff6b6b ${cellData.percentage}%, ${baseColor} ${cellData.percentage}%)`,

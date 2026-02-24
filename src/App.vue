@@ -4,6 +4,7 @@ import MenuPanel from "./components/MenuPanel.vue";
 import RangeTable from "./components/RangeTable.vue";
 import RangeStats from "./components/RangeStats.vue";
 import RangeIO from "./components/RangeIO.vue";
+import RangeCompare from "./components/RangeCompare.vue";
 
 const currentMode = ref("normal");
 const isDragging = ref(false);
@@ -122,6 +123,16 @@ watch(
   }
 );
 
+// 右侧面板标签页
+const activeTab = ref("统计");
+
+// 对比数据
+const compareSelectedCells = ref(null);
+
+const handleCompareChange = (payload) => {
+  compareSelectedCells.value = payload ? payload.compareSelectedCells : null;
+};
+
 // 获取当前活动表格的数据
 const getCurrentTableData = () => {
   const currentTable = tableRefs.value[activeTableIndex.value];
@@ -175,6 +186,7 @@ onMounted(() => {
               @drag-handle="(e) => startDrag(e, index)"
               :table-index="index"
               @duplicate="duplicateTable"
+              :compare-selected-cells="compareSelectedCells"
             />
           </div>
         </div>
@@ -182,9 +194,34 @@ onMounted(() => {
     </main>
 
     <!-- 右侧面板 -->
-    <aside class="fixed top-0 right-0 bottom-0 w-64 bg-[#1C1C1E] border-l border-mac-border z-10 overflow-y-auto p-4 space-y-4">
-      <RangeStats :selected-cells="getCurrentTableData().selectedCells" />
-      <RangeIO :table-data="getCurrentTableData()" @import-range="handleImportRange" />
+    <aside class="fixed top-0 right-0 bottom-0 w-64 bg-[#1C1C1E] border-l border-mac-border z-10 flex flex-col">
+      <!-- 标签页切换 -->
+      <div class="flex border-b border-mac-border shrink-0">
+        <button
+          v-for="tab in ['统计', 'IO', '对比']"
+          :key="tab"
+          class="flex-1 py-2 text-sm transition-colors"
+          :class="activeTab === tab
+            ? 'text-white bg-[#2C2C2E] border-b-2 border-purple-400'
+            : 'text-white/50 hover:text-white/80'"
+          @click="activeTab = tab"
+        >{{ tab }}</button>
+      </div>
+      <!-- 面板内容 -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4">
+        <template v-if="activeTab === '统计'">
+          <RangeStats :selected-cells="getCurrentTableData().selectedCells" />
+        </template>
+        <template v-else-if="activeTab === 'IO'">
+          <RangeIO :table-data="getCurrentTableData()" @import-range="handleImportRange" />
+        </template>
+        <template v-else-if="activeTab === '对比'">
+          <RangeCompare
+            :current-selected-cells="getCurrentTableData().selectedCells"
+            @compare-change="handleCompareChange"
+          />
+        </template>
+      </div>
     </aside>
   </div>
 </template>
